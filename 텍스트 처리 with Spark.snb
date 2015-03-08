@@ -1,0 +1,974 @@
+{
+  "metadata" : {
+    "name" : "Untitled1",
+    "user_save_timestamp" : "1970-01-01T09:00:00.000Z",
+    "auto_save_timestamp" : "1970-01-01T09:00:00.000Z",
+    "language_info" : {
+      "name" : "scala",
+      "file_extension" : "scala",
+      "codemirror_mode" : "text/x-scala"
+    },
+    "trusted" : true,
+    "customLocalRepo" : null,
+    "customRepos" : null,
+    "customDeps" : null,
+    "customImports" : null,
+    "customSparkConf" : null
+  },
+  "cells" : [ {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "## Applying basic tokenization"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : ":local-repo /Users/sweaterr/.m2/repository",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res2: String = Repo changed to /Users/sweaterr/.m2/repository!\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "Repo changed to /Users/sweaterr/.m2/repository!"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 4
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : ":dp org.apache.spark % spark-mllib_2.10 % 1.2.1",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "warning: there were 2 feature warning(s); re-run with -feature for details\njars: Array[String] = [Ljava.lang.String;@6bdaee00\nres6: List[String] = List(/Users/sweaterr/.m2/repository/org/spire-math/spire_2.10/0.7.4/spire_2.10-0.7.4.jar, /Users/sweaterr/.m2/repository/org/apache/spark/spark-catalyst_2.10/1.2.1/spark-catalyst_2.10-1.2.1.jar, /Users/sweaterr/.m2/repository/org/json4s/json4s-core_2.10/3.2.10/json4s-core_2.10-3.2.10.jar, /Users/sweaterr/.m2/repository/org/scala-lang/scala-reflect/2.10.4/scala-reflect-2.10.4.jar, /Users/sweaterr/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar, /Users/sweaterr/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar, /Users/sweaterr/.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar, /Users/sweaterr/.m2/repository/net/sf/opencsv/opencsv/2.3/opencsv-2.3.jar, /Users/s..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<table><tr><td>/Users/sweaterr/.m2/repository/org/spire-math/spire_2.10/0.7.4/spire_2.10-0.7.4.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/apache/spark/spark-catalyst_2.10/1.2.1/spark-catalyst_2.10-1.2.1.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/json4s/json4s-core_2.10/3.2.10/json4s-core_2.10-3.2.10.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/scala-lang/scala-reflect/2.10.4/scala-reflect-2.10.4.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/net/sf/opencsv/opencsv/2.3/opencsv-2.3.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/commons-el/commons-el/1.0/commons-el-1.0.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/spire-math/spire-macros_2.10/0.7.4/spire-macros_2.10-0.7.4.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/com/twitter/parquet-common/1.6.0rc3/parquet-common-1.6.0rc3.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.11/jackson-core-asl-1.9.11.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/com/twitter/parquet-column/1.6.0rc3/parquet-column-1.6.0rc3.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/eclipse/jetty/jetty-util/8.1.14.v20131031/jetty-util-8.1.14.v20131031.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/uncommons/maths/uncommons-maths/1.2.2a/uncommons-maths-1.2.2a.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/apache/spark/spark-network-shuffle_2.10/1.2.1/spark-network-shuffle_2.10-1.2.1.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/spark-project/spark/unused/1.0.0/unused-1.0.0.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/io/netty/netty/3.8.0.Final/netty-3.8.0.Final.jar</td></tr><tr><td>/Users/sweaterr/.m2/repository/org/eclipse/jetty/jetty-servlet/8.1.14.v20131031/jetty-servlet-8.1.14.v20131031.jar</td></tr><tr><td>...</td></tr></table>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 5
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.SparkContext._\nimport org.apache.spark.mllib.linalg.{ SparseVector => SV }\nimport org.apache.spark.mllib.feature.HashingTF\nimport org.apache.spark.mllib.feature.IDF\n\nval path = \"/Users/sweaterr/projects/mlspark/20news-bydate/20news-bydate-train/rec.*\"\nval rdd = sparkContext.wholeTextFiles(path)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.SparkContext._\nimport org.apache.spark.mllib.linalg.{SparseVector=>SV}\nimport org.apache.spark.mllib.feature.HashingTF\nimport org.apache.spark.mllib.feature.IDF\npath: String = /Users/sweaterr/projects/mlspark/20news-bydate/20news-bydate-train/rec.*\nrdd: org.apache.spark.rdd.RDD[(String, String)] = /Users/sweaterr/projects/mlspark/20news-bydate/20news-bydate-train/rec.* WholeTextFileRDD[0] at wholeTextFiles at <console>:37\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "/Users/sweaterr/projects/mlspark/20news-bydate/20news-bydate-train/rec.* WholeTextFileRDD[0] at wholeTextFiles at &lt;console&gt;:37"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 6
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val text = rdd.map { case (file, text) => text }",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "text: org.apache.spark.rdd.RDD[String] = MappedRDD[1] at map at <console>:41\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "MappedRDD[1] at map at &lt;console&gt;:41"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 7
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "text.count",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res7: Long = 2389\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "2389"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 8
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val newsgroups = rdd.map { case (file, text) => file.split(\"/\").takeRight(2).head }\nnewsgroups.first()",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "newsgroups: org.apache.spark.rdd.RDD[String] = MappedRDD[2] at map at <console>:41\nres8: String = rec.autos\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "rec.autos"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 9
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val countByGroup = newsgroups.map(n => (n, 1)).reduceByKey(_ + _).collect.sortBy(-_._2).mkString(\"\\n\")\ncountByGroup",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "countByGroup: String = \n(rec.sport.hockey,600)\n(rec.motorcycles,598)\n(rec.sport.baseball,597)\n(rec.autos,594)\nres9: String = \n(rec.sport.hockey,600)\n(rec.motorcycles,598)\n(rec.sport.baseball,597)\n(rec.autos,594)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "(rec.sport.hockey,600)\n(rec.motorcycles,598)\n(rec.sport.baseball,597)\n(rec.autos,594)"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 10
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val text = rdd.map { case (file, text) => text }\nval whiteSpaceSplit = text.flatMap(t => t.split(\" \").map(_.toLowerCase))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "text: org.apache.spark.rdd.RDD[String] = MappedRDD[5] at map at <console>:43\nwhiteSpaceSplit: org.apache.spark.rdd.RDD[String] = FlatMappedRDD[6] at flatMap at <console>:44\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "FlatMappedRDD[6] at flatMap at &lt;console&gt;:44"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 11
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "whiteSpaceSplit.distinct.count",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res10: Long = 92883\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "92883"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 12
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "whiteSpaceSplit.distinct.first()",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res11: String = \n8\n\n\n\ti\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "8\n\n\n\ti"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 13
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "whiteSpaceSplit.sample(true, 0.3, 42).take(100).mkString(\",\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res12: String = \nfrom:,cs012055@cs.brown.edu,cs012055@cs.brown.edu,re:,re:,saturn's,pricing,brown,computer,writes:\n|>,defending,saturn,on,net,state,full,than,than,reply,points.\n|>,\tthe,seem,to,to,be,that,saturn\n|>,make,~$2k,car.,,most,me,is,,is,,they,compared,to,in,their,class.,understand,arguing,arguing,over,dealer,makes,makes,,\n|>,over,dealer,dealer,that,can,can,is,believe,believe,if\n|>,minimize,their,this,cases,,not\n|>,bought,'92.\n|>,studying,i,was,cheaply,the,sure,,maybe,maybe,for,other,car,car,wouldn't,important\n|>,is,how,dealer,profit\n|>,profit\n|>,as,saving,and,believe,that,important.,experience,that,does,save,fred\n\n\nsay,,saturn,at,a\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "from:,cs012055@cs.brown.edu,cs012055@cs.brown.edu,re:,re:,saturn's,pricing,brown,computer,writes:\n|&gt;,defending,saturn,on,net,state,full,than,than,reply,points.\n|&gt;,\tthe,seem,to,to,be,that,saturn\n|&gt;,make,~$2k,car.,,most,me,is,,is,,they,compared,to,in,their,class.,understand,arguing,arguing,over,dealer,makes,makes,,\n|&gt;,over,dealer,dealer,that,can,can,is,believe,believe,if\n|&gt;,minimize,their,this,cases,,not\n|&gt;,bought,'92.\n|&gt;,studying,i,was,cheaply,the,sure,,maybe,maybe,for,other,car,car,wouldn't,important\n|&gt;,is,how,dealer,profit\n|&gt;,profit\n|&gt;,as,saving,and,believe,that,important.,experience,that,does,save,fred\n\n\nsay,,saturn,at,a"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 14
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val nonWordSplit = text.flatMap(t => t.split(\"\"\"\\W+\"\"\").map(_.toLowerCase))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "nonWordSplit: org.apache.spark.rdd.RDD[String] = FlatMappedRDD[14] at flatMap at <console>:43\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "FlatMappedRDD[14] at flatMap at &lt;console&gt;:43"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 15
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "nonWordSplit.distinct.count",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res13: Long = 30483\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "30483"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 16
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "nonWordSplit.distinct.sample(true, 0.3, 42).take(100).mkString(\",\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res14: String = ou,3492,3492,mjs,mjs,bone,lug,mattered,ntuvax,crying,ignore,eventuality,6j,beleive,robin,erected,gaffes,gaffes,dangers,descending,kielbasa,4057,collins,collins,finnegan,jmckinney,u16028,slimy,bellevue,tiems,unforeseen,museum,continuara,likenesses,likenesses,peeing,point,strut,noc,413,ka0wch,bernard,right,right,semchuk,borg,ets,ets,_impending,hockey3,6192,instruments,instruments,octopi,utulsa,utulsa,raffle,crossman,crossman,saberhagen,eisner,miserable,sjoberg,shaky,explorers,4,hour,feszcm,immature,interfere,7678,discuss,reactivated,responsbible,responsbible,quintal,macdermid,gehrig,gehrig,yorn,hifk,dx,carkner,counterclockwise,sayeth,sayeth,offending,ole,00ecgillespie,presets,suspects,kipling,io21087,v,joe_mullen,birds,bark,hilly,8v0,23595\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "ou,3492,3492,mjs,mjs,bone,lug,mattered,ntuvax,crying,ignore,eventuality,6j,beleive,robin,erected,gaffes,gaffes,dangers,descending,kielbasa,4057,collins,collins,finnegan,jmckinney,u16028,slimy,bellevue,tiems,unforeseen,museum,continuara,likenesses,likenesses,peeing,point,strut,noc,413,ka0wch,bernard,right,right,semchuk,borg,ets,ets,_impending,hockey3,6192,instruments,instruments,octopi,utulsa,utulsa,raffle,crossman,crossman,saberhagen,eisner,miserable,sjoberg,shaky,explorers,4,hour,feszcm,immature,interfere,7678,discuss,reactivated,responsbible,responsbible,quintal,macdermid,gehrig,gehrig,yorn,hifk,dx,carkner,counterclockwise,sayeth,sayeth,offending,ole,00ecgillespie,presets,suspects,kipling,io21087,v,joe_mullen,birds,bark,hilly,8v0,23595"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 17
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val regex = \"\"\"[^0-9]*\"\"\".r\nval filterNumbers = nonWordSplit.filter(token => regex.pattern.matcher(token).matches)\nprintln(filterNumbers.distinct.count)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "25038\nregex: scala.util.matching.Regex = [^0-9]*\nfilterNumbers: org.apache.spark.rdd.RDD[String] = FilteredRDD[22] at filter at <console>:46\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 18
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "println(filterNumbers.distinct.sample(true, 0.3, 42).take(100).mkString(\",\"))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "mattered,intimately,intimately,bone,bone,lug,reunion,nothin,netminder,unisa,loyalists,stern,seductive,robin,sively,richards,initiation,initiation,montieth,finnegan,slimy,unforeseen,rolled,rolled,viewed,reformatory,wakaluk,whit,gunning,dierker,wales,win,rebroadcast,table,table,right,ets,poseur,_impending,ger,varda,haphazardly,corey,corey,obert,anthropologists,utulsa,utulsa,nixdorf,second,eisner,miserable,miserable,sjoberg,gaetti,gaetti,eng,deadweight,deadweight,computational,inviting,came,snowball,drow,interfere,calmly,thrills,arent,yorn,carkner,poland,nyi,blair,counterclockwise,counterclockwise,offending,out,barnett,barnett,presets,v,joe_mullen,throng,bigger,boon,boon,isuzu,dirtbags,jints,abort,misspellings,thatchh,commented,adolf,hutton,walters,constant,craig_simpson,ineffective,lonny\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 19
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val tokenCounts = filterNumbers.map(t => (t, 1)).reduceByKey(_ + _)\nval oreringDesc = Ordering.by[(String, Int), Int](_._2)\ntokenCounts.top(20)(oreringDesc).mkString(\"\\n\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "tokenCounts: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[31] at reduceByKey at <console>:49\noreringDesc: scala.math.Ordering[(String, Int)] = scala.math.Ordering$$anon$9@4ea5d20d\nres17: String = \n(the,24984)\n(a,11448)\n(to,10944)\n(i,9746)\n(of,9038)\n(and,9001)\n(in,8895)\n(is,5739)\n(that,5526)\n(it,5240)\n(for,4672)\n(edu,4423)\n(you,4357)\n(s,4145)\n(on,3990)\n(from,3857)\n(t,3456)\n(have,3127)\n(was,3035)\n(this,2847)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "(the,24984)\n(a,11448)\n(to,10944)\n(i,9746)\n(of,9038)\n(and,9001)\n(in,8895)\n(is,5739)\n(that,5526)\n(it,5240)\n(for,4672)\n(edu,4423)\n(you,4357)\n(s,4145)\n(on,3990)\n(from,3857)\n(t,3456)\n(have,3127)\n(was,3035)\n(this,2847)"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 20
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val stopwords = Set(\n  \"the\",\"a\",\"an\",\"of\",\"or\",\"in\",\"for\",\"by\",\"on\",\"but\", \"is\", \"not\", \"with\", \"as\", \"was\", \"if\",\n  \"they\", \"are\", \"this\", \"and\", \"it\", \"have\", \"from\", \"at\", \"my\", \"be\", \"that\", \"to\"\n)\nval tokenCountsFilteredStopwords = tokenCounts.filter { case (k, v) => !stopwords.contains(k) }\nprintln(tokenCountsFilteredStopwords.top(20)(oreringDesc).mkString(\"\\n\"))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "(i,9746)\n(edu,4423)\n(you,4357)\n(s,4145)\n(t,3456)\n(he,2628)\n(com,2595)\n(subject,2496)\n(lines,2439)\n(organization,2417)\n(re,2367)\n(writes,1871)\n(article,1820)\n(can,1686)\n(will,1563)\n(all,1527)\n(would,1468)\n(what,1438)\n(about,1412)\n(one,1408)\nstopwords: scala.collection.immutable.Set[String] = Set(for, this, in, have, are, is, but, if, it, a, as, or, they, that, to, was, at, on, my, by, not, with, from, an, be, of, and, the)\ntokenCountsFilteredStopwords: org.apache.spark.rdd.RDD[(String, Int)] = FilteredRDD[33] at filter at <console>:57\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 21
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val tokenCountsFilteredSize = tokenCountsFilteredStopwords.filter { case (k, v) => k.size >= 2 }\nprintln(tokenCountsFilteredSize.top(20)(oreringDesc).mkString(\"\\n\"))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "(edu,4423)\n(you,4357)\n(he,2628)\n(com,2595)\n(subject,2496)\n(lines,2439)\n(organization,2417)\n(re,2367)\n(writes,1871)\n(article,1820)\n(can,1686)\n(will,1563)\n(all,1527)\n(would,1468)\n(what,1438)\n(about,1412)\n(one,1408)\n(out,1388)\n(has,1363)\n(so,1349)\ntokenCountsFilteredSize: org.apache.spark.rdd.RDD[(String, Int)] = FilteredRDD[35] at filter at <console>:57\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 22
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val oreringAsc = Ordering.by[(String, Int), Int](-_._2)\nprintln(tokenCountsFilteredSize.top(20)(oreringAsc).mkString(\"\\n\"))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "(perfectionist,1)\n(pointy,1)\n(bankruptcies,1)\n(gavin,1)\n(swith,1)\n(seer,1)\n(delusion,1)\n(remar,1)\n(execute,1)\n(unacceptable,1)\n(flamage,1)\n(doubtful,1)\n(kinetic,1)\n(analagous,1)\n(snatch,1)\n(emerich,1)\n(relieves,1)\n(reviewer,1)\n(krivokrasov,1)\n(fumbled,1)\noreringAsc: scala.math.Ordering[(String, Int)] = scala.math.Ordering$$anon$9@1bb91d74\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 23
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val rareTokens = tokenCounts.filter{ case (k, v) => v < 2 }.map { case (k, v) => k }.collect.toSet\nval tokenCountsFilteredAll = tokenCountsFilteredSize.filter { case (k, v) => !rareTokens.contains(k) }\ntokenCountsFilteredAll.top(20)(oreringAsc).mkString(\"\\n\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rareTokens: scala.collection.immutable.Set[String] = Set(klg, brink, acronym, precious, boxers, lederle, snailmail, powerplants, wakaluk, salesperson, pipex, ellet, blowtisserie, taiwan, norht, truckload, desolate, pubbrew, snowball, darkened, exuberance, buckle, bing, fxr, analogous, stacked, actuated, scholarships, cdavis, daycare, ranking, firstly, irs, cre, _heisenberg, spraining, dovetail, mahavolich, bandy, chunking, thundarr, robiksen, overdue, magnolia, exploit, orchestra, crts, outhouse, finalized, blanketing, uxbridge, associations, salvaged, basenotes, overcame, fof, crimp, fittings, alman, conversations, vik, conslt, rethread, vilante, icbm, beachball, vlx, kinetic, assertive, _bull_durham_, esther, talkin, deverona, nazarov, kazoostorm, puched, sweeter, forgoes, hydroplaned..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "(supersedes,2)\n(dipshit,2)\n(consistantly,2)\n(stocker,2)\n(attributing,2)\n(wvnvms,2)\n(chargers,2)\n(outfielder,2)\n(_does_,2)\n(tracer,2)\n(beloved,2)\n(senna,2)\n(wrl,2)\n(absurdum,2)\n(perceive,2)\n(linthicum,2)\n(contradictory,2)\n(brent_gilchrist,2)\n(feagans,2)\n(ry,2)"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 24
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "tokenCountsFilteredAll.count",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res22: Long = 16608\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "16608"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 25
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "// combine all our filtering logic into one function\ndef tokenize(line: String): Seq[String] = {\n  line.split(\"\"\"\\W+\"\"\")\n    .map(_.toLowerCase)\n    .filter(token => regex.pattern.matcher(token).matches)\n    .filterNot(token => stopwords.contains(token))\n    .filterNot(token => rareTokens.contains(token))\n    .filter(token => token.size >= 2)\n    .toSeq\n}",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "tokenize: (line: String)Seq[String]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 26
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "//check whether this function gives us the same result with the following code snippet\ntext.flatMap(doc => tokenize(doc)).distinct.count ",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res23: Long = 16608\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "16608"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 27
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "//tokenize each document in our RDD\nval tokens = text.map(doc => tokenize(doc))\ntokens.first.take(10)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "tokens: org.apache.spark.rdd.RDD[Seq[String]] = MappedRDD[54] at map at <console>:60\nres35: Seq[String] = WrappedArray(cs, brown, edu, hok, chung, tsang, subject, re, saturn, pricing)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<table><tr><td>cs</td></tr><tr><td>brown</td></tr><tr><td>edu</td></tr><tr><td>hok</td></tr><tr><td>chung</td></tr><tr><td>tsang</td></tr><tr><td>subject</td></tr><tr><td>re</td></tr><tr><td>saturn</td></tr><tr><td>pricing</td></tr></table>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 42
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "## Training a TF-IDF model"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val dim = math.pow(2, 16).toInt\nval hashingTF = new HashingTF(dim)\nval tf = hashingTF.transform(tokens)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "dim: Int = 65536\nhashingTF: org.apache.spark.mllib.feature.HashingTF = org.apache.spark.mllib.feature.HashingTF@3223a983\ntf: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MappedRDD[47] at map at HashingTF.scala:70\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "MappedRDD[47] at map at HashingTF.scala:70"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 29
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val v = tf.first.asInstanceOf[SV]\nprintln(v.size)\nprintln(v.values.size)\nprintln(v.values.take(10).toSeq)\nprintln(v.indices.take(10).toSeq)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "65536\n174\nWrappedArray(2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 5.0)\nWrappedArray(1500, 1518, 2266, 2286, 3093, 3184, 3211, 3215, 3456, 3480)\nv: org.apache.spark.mllib.linalg.SparseVector = (65536,[1500,1518,2266,2286,3093,3184,3211,3215,3456,3480,3521,3635,3673,3676,4842,5164,5739,6662,8108,8149,8384,8809,8825,8847,9253,9309,9594,9891,9941,10274,11009,12943,13600,15189,15235,15572,15940,16904,17179,17978,18078,18796,19873,19996,19997,20223,20493,20537,20643,20673,20748,21197,21234,21716,21804,21904,22719,22890,23779,24607,24682,25443,25632,26363,26821,28261,28310,29356,29434,30042,30094,30120,30308,30635,30779,30794,31212,31519,31861,32000,32390,32518,32528,32539,32720,32724,33078,33153,33279,34030,34034,34115,34222,34742,34814,35503,35556,35563,35889,36097,36531,37255,37530,37948,37956,37968,38294,39044,39080,39524,40473,40746,40902,40967,41369,42100,42290,42341,43175,43384,43421,43716,43734,44240,44528,44878,44951,45010,45..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 34
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "We will now compute the inverse document frequency for each term in the corpus by creating a new ``IDF`` instance and calling `fit` with our RDD of term frequency vectors as the input. We will then transform our term frequency vectors to TF-IDF vectors through the `transform` function of `IDF`:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val idf = new IDF().fit(tf)\nval tfidf = idf.transform(tf)\nval v2 = tfidf.first.asInstanceOf[SV]\nprintln(v2.values.size)\nprintln(v2.values.take(10).toSeq)\nprintln(v2.indices.take(10).toSeq)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "174\nWrappedArray(3.6206821698803813, 1.8682520008850292, 3.8472230122012303, 6.680436356257447, 2.1880616644146995, 4.137243255101374, 1.190122167392037, 5.9872891756975015, 1.9384069875521581, 5.535078497322447)\nWrappedArray(1500, 1518, 2266, 2286, 3093, 3184, 3211, 3215, 3456, 3480)\ntfidf: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MapPartitionsRDD[49] at mapPartitions at IDF.scala:177\nv2: org.apache.spark.mllib.linalg.SparseVector = (65536,[1500,1518,2266,2286,3093,3184,3211,3215,3456,3480,3521,3635,3673,3676,4842,5164,5739,6662,8108,8149,8384,8809,8825,8847,9253,9309,9594,9891,9941,10274,11009,12943,13600,15189,15235,15572,15940,16904,17179,17978,18078,18796,19873,19996,19997,20223,20493,20537,20643,20673,20748,21197,21234,21716,21804,21904,22719,22890,23779,24607,24682,25443,25632,26363,26821,28261,28310,29356,29434,30042,30094,30120,30308,30635,30779,30794,31212,31519,31861,32000,32390,32518,32528,32539,32720,32724,33078,33153,33279,34030,34034,34115,34222,34742,34814,35503,35556,35563,35889,36097,36531,37255,37530,37948,37956,37968,38294,..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 35
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "##Analyzing the TF-IDF weightings\nNext, let's investigate the TF-IDF weighting for a few terms to illustrate the impact of the commonality or rarity of a term.\n\nFirst, we can compute the minimum and maximum TF-IDF weights across the entire corpus:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val minMaxVals = tfidf.map { v =>\n  val sv = v.asInstanceOf[SV]\n  (sv.values.min, sv.values.max)\n}\nminMaxVals.",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "minMaxVals: org.apache.spark.rdd.RDD[(Double, Double)] = MappedRDD[57] at map at <console>:73\nres37: (Double, Double) = (0.0,44.46844134750353)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "(0.0,44.46844134750353)"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 45
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val globalMinMax = minMaxVals.reduce { case ((min1, max1), (min2, max2)) =>\n  (math.min(min1, min2), math.max(max1, max2))\n}\nglobalMinMax",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "globalMinMax: (Double, Double) = (0.0,472.4842181654897)\nres38: (Double, Double) = (0.0,472.4842181654897)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "(0.0,472.4842181654897)"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 46
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "* We will now explore the TF-IDF weight attached to various terms. \n* In the previous section on stop words, we filtered out many common terms that occur frequently. \n* Recall that we did not remove all such potential stop words. \n* Instead, we kept a few in the corpus so that we could illustrate the impact of applying the TF-IDF weighting scheme on these terms.\n\n* TF-IDF weighting will tend to assign a lower weighting to common terms. \n* To see this, we can compute the TF-IDF representation for a few of the terms that appear in the list of top occurrences that we previously computed, such as `you`, `do`, and `we`:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val common = sparkContext.parallelize(Seq(Seq(\"you\", \"do\", \"we\")))\nval tfCommon = hashingTF.transform(common)\nval tfidfCommon = idf.transform(tfCommon)\nval commonVector = tfidfCommon.first.asInstanceOf[SV]\nprintln(commonVector.values.toSeq)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "WrappedArray(1.190122167392037, 1.5704586188289276, 0.5682301914533361)\ncommon: org.apache.spark.rdd.RDD[Seq[String]] = ParallelCollectionRDD[58] at parallelize at <console>:67\ntfCommon: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MappedRDD[59] at map at HashingTF.scala:70\ntfidfCommon: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MapPartitionsRDD[60] at mapPartitions at IDF.scala:177\ncommonVector: org.apache.spark.mllib.linalg.SparseVector = (65536,[3211,3790,54303],[1.190122167392037,1.5704586188289276,0.5682301914533361])\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 48
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "* If we form a TF-IDF vector representation of this document, we would see the following values assigned to each term. \n* Note that because of feature hashing, we are not sure exactly which term represents what. \n* However, the values illustrate that the weighting applied to these terms is relatively low:"
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "* Now, let's apply the same transformation to a few less common terms that we might intuitively associate with being more linked to specific topics or concepts:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val uncommon = sparkContext.parallelize(Seq(Seq(\"telescope\", \"legislation\", \"investment\")))\nval tfUncommon = hashingTF.transform(uncommon)\nval tfidfUncommon = idf.transform(tfUncommon)\nval uncommonVector = tfidfUncommon.first.asInstanceOf[SV]\nprintln(uncommonVector.values.toSeq)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "WrappedArray(6.169610732491456, 6.680436356257447, 6.680436356257447)\nuncommon: org.apache.spark.rdd.RDD[Seq[String]] = ParallelCollectionRDD[61] at parallelize at <console>:67\ntfUncommon: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MappedRDD[62] at map at HashingTF.scala:70\ntfidfUncommon: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MapPartitionsRDD[63] at mapPartitions at IDF.scala:177\nuncommonVector: org.apache.spark.mllib.linalg.SparseVector = (65536,[13011,22465,46314],[6.169610732491456,6.680436356257447,6.680436356257447])\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 51
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "# Using a TF-IDF model\n"
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "* While we often refer to training a TF-IDF model, it is actually a feature extraction process or transformation rather than a machine learning model. \n* TF-IDF weighting is often used as a preprocessing step for other models, such as dimensionality reduction, classification, or regression.\n\n* To illustrate the potential uses of TF-IDF weighting, we will explore two examples. \n* The first is using the TF-IDF vectors to compute document similarity, while the second involves training a multilabel classification model with the TF-IDF vectors as input features."
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "## Document similarity with the 20 Newsgroups dataset and TF-IDF features\n* You might recall from Chapter 4, Building a Recommendation Engine with Spark, that the similarity between two vectors can be computed using a distance metric. \n* The closer two vectors are (that is, the lower the distance metric), the more similar they are. \n* One such metric that we used to compute similarity between movies is cosine similarity.\n\n* Just like we did for movies, we can also compute the similarity between two documents. \n* Using TF-IDF, we have transformed each document into a vector representation. \n* Hence, we can use the same techniques as we used for movie vectors to compare two documents.\n\n* Intuitively, we might expect two documents to be more similar to each other if they share many terms. \n* Conversely, we might expect two documents to be less similar if they each contain many terms that are different from each other. \n* As we compute cosine similarity by computing a dot product of the two vectors and each vector is made up of the terms in each document, we can see that documents with a high overlap of terms will tend to have a higher cosine similarity.\n\n* Now, we can see TF-IDF at work. We might reasonably expect that even very different documents might contain many overlapping terms that are relatively common (for example, our stop words). \n* However, due to a low TF-IDF weighting, these terms will not have a significant impact on the dot product and, therefore, will not have much impact on the similarity computed.\n\n* For example, we might expect two randomly chosen messages from the hockey newsgroup to be relatively similar to each other. Let's see if this is the case:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val hockeyText = rdd.filter { case (file, text) => file.contains(\"hockey\") }\nval hockeyTF = hockeyText.mapValues(doc => hashingTF.transform(tokenize(doc)))\nval hockeyTfIdf = idf.transform(hockeyTF.map(_._2))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "hockeyText: org.apache.spark.rdd.RDD[(String, String)] = FilteredRDD[64] at filter at <console>:67\nhockeyTF: org.apache.spark.rdd.RDD[(String, org.apache.spark.mllib.linalg.Vector)] = MappedValuesRDD[65] at mapValues at <console>:68\nhockeyTfIdf: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MapPartitionsRDD[67] at mapPartitions at IDF.scala:177\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "MapPartitionsRDD[67] at mapPartitions at IDF.scala:177"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 52
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "In the preceding code, we first filtered our raw input RDD to keep only the messages within the hockey topic. We then applied our tokenization and term frequency transformation functions. Note that the `transform` method used is the version that works on a single document (in the form of a `Seq[String])` rather than the version that works on an RDD of documents.\n\nFinally, we applied the `IDF` transform (note that we use the same IDF that we have already computed on the whole corpus).\n\nOnce we have our `hockey` document vectors, we can select two of these vectors at random and compute the cosine similarity between them (as we did earlier, we will use Breeze for the linear algebra functionality, in particular converting our MLlib vectors to Breeze `SparseVector` instances first):"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "import breeze.linalg._\nval hockey1 = hockeyTfIdf.sample(true, 0.1, 42).first.asInstanceOf[SV]\nval breeze1 = new SparseVector(hockey1.indices, hockey1.values, hockey1.size)\nval hockey2 = hockeyTfIdf.sample(true, 0.1, 43).first.asInstanceOf[SV]\nval breeze2 = new SparseVector(hockey2.indices, hockey2.values, hockey2.size)\nval cosineSim = breeze1.dot(breeze2) / (norm(breeze1) * norm(breeze2))\ncosineSim",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import breeze.linalg._\nhockey1: org.apache.spark.mllib.linalg.SparseVector = (65536,[472,1500,1631,1795,2077,2141,2486,2489,2634,3023,3166,3184,3211,3325,3379,3635,3676,3739,3790,5170,5493,5600,5604,5776,6332,7058,7155,7512,8825,8953,9101,9117,9378,9528,9941,12632,12993,13152,13733,15189,15572,15771,16018,16759,16989,19442,19997,20107,20223,20751,20985,21804,22704,23690,23779,25536,25617,25988,27698,27729,27827,28269,28595,29356,30787,31017,31212,31735,32278,32531,32720,33919,34034,34115,34638,36568,36573,37310,37515,37530,37573,37593,37772,37778,37906,37921,37967,37968,38165,38539,38892,39577,41212,41499,41791,41801,42000,42093,42100,42433,42794,42889,43506,43716,43734,43834,44092,44918,44951,45107,45155,45219,45839,46137,46642,47354,47938,48211,48591,48736,48802,49492,49662,49947,5056..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "0.17456496562313592"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 54
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "While this might seem quite low, recall that the effective dimensionality of our features is high due to the large number of unique terms that is typical when dealing with text data. Hence, we can expect that any two documents might have a relatively low overlap of terms even if they are about the same topic, and therefore would have a lower absolute similarity score.\n\nBy contrast, we can compare this similarity score to the one computed between one of our `hockey` documents and another document chosen randomly from the `motorcycles` newsgroup, using the same methodology:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val graphicsText = rdd.filter { case (file, text) => file.contains(\"motorcycles\") }\nval graphicsTF = graphicsText.mapValues(doc => hashingTF.transform(tokenize(doc)))\nval graphicsTfIdf = idf.transform(graphicsTF.map(_._2))\nval graphics = graphicsTfIdf.sample(true, 0.1, 42).first.asInstanceOf[SV]\nval breezeGraphics = new SparseVector(graphics.indices, graphics.values, graphics.size)\nval cosineSim2 = breeze1.dot(breezeGraphics) / (norm(breeze1) * norm(breezeGraphics))\ncosineSim2",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "graphicsText: org.apache.spark.rdd.RDD[(String, String)] = FilteredRDD[72] at filter at <console>:83\ngraphicsTF: org.apache.spark.rdd.RDD[(String, org.apache.spark.mllib.linalg.Vector)] = MappedValuesRDD[73] at mapValues at <console>:84\ngraphicsTfIdf: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MapPartitionsRDD[75] at mapPartitions at IDF.scala:177\ngraphics: org.apache.spark.mllib.linalg.SparseVector = (65536,[200,1089,1151,1301,1464,1573,1720,2511,2631,2770,3093,3130,3211,3304,3355,3572,3635,4284,4653,7042,7276,8077,9478,12777,13447,13590,15235,16032,16095,17583,19060,19112,19873,19986,19996,20223,20729,21069,21439,21804,22942,24363,24553,24751,26493,28548,30985,31157,31411,31770,32720,32726,33153,34030,34105,34742,34938,35736,35836,36697,36942,37968,38653,38786,39..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "0.004335922906340371"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 55
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "## Training a text classifier on the 20 Newsgroups dataset using TF-IDF\n\nWhen using TF-IDF vectors, we expected that the cosine similarity measure would capture the similarity between documents, based on the overlap of terms between them. In a similar way, we would expect that a machine learning model, such as a classifier, would be able to learn weightings for individual terms; this would allow it to distinguish between documents from different classes. That is, it should be possible to learn a mapping between the presence (and weighting) of certain terms and a specific topic.\n\nIn the 20 Newsgroups example, each newsgroup topic is a class, and we can train a classifier using our TF-IDF transformed vectors as input.\n\nSince we are dealing with a multiclass classification problem, we will use the naïve Bayes model in MLlib, which supports multiple classes. As the first step, we will import the Spark classes that we will be using:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.mllib.regression.LabeledPoint\nimport org.apache.spark.mllib.classification.NaiveBayes\nimport org.apache.spark.mllib.evaluation.MulticlassMetrics",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.mllib.regression.LabeledPoint\nimport org.apache.spark.mllib.classification.NaiveBayes\nimport org.apache.spark.mllib.evaluation.MulticlassMetrics\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 57
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "Next, we will need to extract the 20 topics and convert them to class mappings. We can do this in exactly the same way as we might for 1-of-K feature encoding, by assigning a numeric index to each class:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val newsgroupsMap = newsgroups.distinct.collect().zipWithIndex.toMap\nnewsgroupsMap",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "newsgroupsMap: scala.collection.immutable.Map[String,Int] = Map(rec.motorcycles -> 0, rec.sport.baseball -> 1, rec.autos -> 2, rec.sport.hockey -> 3)\nres46: scala.collection.immutable.Map[String,Int] = Map(rec.motorcycles -> 0, rec.sport.baseball -> 1, rec.autos -> 2, rec.sport.hockey -> 3)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "Map(rec.motorcycles -&gt; 0, rec.sport.baseball -&gt; 1, rec.autos -&gt; 2, rec.sport.hockey -&gt; 3)"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 59
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val zipped = newsgroups.zip(tfidf)\nzipped.first",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "zipped: org.apache.spark.rdd.RDD[(String, org.apache.spark.mllib.linalg.Vector)] = ZippedPartitionsRDD2[87] at zip at <console>:82\nres48: (String, org.apache.spark.mllib.linalg.Vector) = (rec.autos,(65536,[1500,1518,2266,2286,3093,3184,3211,3215,3456,3480,3521,3635,3673,3676,4842,5164,5739,6662,8108,8149,8384,8809,8825,8847,9253,9309,9594,9891,9941,10274,11009,12943,13600,15189,15235,15572,15940,16904,17179,17978,18078,18796,19873,19996,19997,20223,20493,20537,20643,20673,20748,21197,21234,21716,21804,21904,22719,22890,23779,24607,24682,25443,25632,26363,26821,28261,28310,29356,29434,30042,30094,30120,30308,30635,30779,30794,31212,31519,31861,32000,32390,32518,32528,32539,32720,32724,33078,33153,33279,34030,34034,34115,34222,34742,34814,35503,35556,35563,35889,36097,36531,37255,37530,37..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "(rec.autos,(65536,[1500,1518,2266,2286,3093,3184,3211,3215,3456,3480,3521,3635,3673,3676,4842,5164,5739,6662,8108,8149,8384,8809,8825,8847,9253,9309,9594,9891,9941,10274,11009,12943,13600,15189,15235,15572,15940,16904,17179,17978,18078,18796,19873,19996,19997,20223,20493,20537,20643,20673,20748,21197,21234,21716,21804,21904,22719,22890,23779,24607,24682,25443,25632,26363,26821,28261,28310,29356,29434,30042,30094,30120,30308,30635,30779,30794,31212,31519,31861,32000,32390,32518,32528,32539,32720,32724,33078,33153,33279,34030,34034,34115,34222,34742,34814,35503,35556,35563,35889,36097,36531,37255,37530,37948,37956,37968,38294,39044,39080,39524,40473,40746,40902,40967,41369,42100,42290,42341,43175,43384,43421,43716,43734,44240,44528,44878,44951,45010,45107,45144,45224,45338,45385,45954,46137,46231,46937,47051,47173,48107,48213,48299,49254,49533,49823,50321,50601,50703,50718,50763,51234,51577,51852,52017,52470,52858,53402,54195,54303,56061,56132,56555,56861,57633,60227,60520,60723,61948,62700,62708,62822,64156,64620,65093],[3.6206821698803813,1.8682520008850292,3.8472230122012303,6.680436356257447,2.1880616644146995,4.137243255101374,1.190122167392037,5.9872891756975015,1.9384069875521581,5.535078497322447,1.2011872872045097,0.2664311002510456,5.9872891756975015,1.0721863083228094,1.6631565194425224,4.552670881813543,9.669219331518232,1.8682520008850292,4.310781678613214,3.4483153046392254,20.380599361289818,6.169610732491456,3.595268867342152,3.1940811662549846,2.9427667379740785,3.718605634379137,4.252688120309395,5.294141995137556,4.269232999477506,6.514520135753032,7.543430919386171,5.637453874029195,5.9872891756975015,1.330159250778699,3.8195034635835636,3.5701744352379743,41.79198986096766,5.8331384958702435,11.974578351395003,4.31331274212583,11.666276991740487,5.139991315310298,1.4422229137791154,1.6115321540372152,5.44640790392133,0.004613134622598731,1.6348630107999105,2.9427667379740785,17.49941548761073,1.7556010519645238,3.6359139185340235,1.4386893411978043,5.381153372127186,7.676078459541695,0.0,2.3194631307813975,3.9504072484364614,3.21470045345772,3.2357538626555526,4.31331274212583,5.476463551931511,3.115609550813489,2.8886995167038028,6.392754283805666,2.6791822171013577,2.881208844974645,4.483211778921227,2.934861558466965,16.429390655794535,6.379599015952293,5.80770264344881,5.9872891756975015,1.0832497278670647,1.805239033056295,10.952927103863022,8.966423557842454,1.1737507239773546,9.746857571842982,4.09016919081162,2.403770237241391,5.632408029331298,5.381153372127186,3.1248850876813834,2.4224623702535437,0.9069205435865704,14.606442485102177,8.130953156442496,0.8603534259050849,3.651914259880465,4.499239114828266,1.3428982765561288,1.2336989845911368,5.476463551931511,0.8557808369897257,3.4483153046392254,5.381153372127186,3.668174780752245,4.11548699879591,7.369408165406911,5.9872891756975015,5.294141995137556,5.381153372127186,1.1248961247423377,7.471994754182012,6.392754283805666,2.7443373177124837,8.966423557842454,5.382904619386345,2.310988503790425,2.983258099328815,36.4445457889807,4.834609665759116,5.006459922685775,2.441510565224238,2.6791822171013577,0.5667541764252155,4.783316371371566,2.052200897338359,12.785508567611332,7.815695268035331,2.7486107235331207,2.005083305106747,1.6178413232304798,2.8590677190974314,1.9679076519488559,3.0628624214934765,1.0956876991592817,7.190457045843643,1.341296995189155,3.1839287947909662,3.257260067876516,5.002743916268634,9.181649320891385,3.0877007626964126,3.07856827913314,4.520952106904074,6.680436356257447,44.46844134750353,2.881208844974645,3.906097075090212,13.360872712514894,5.381153372127186,4.078511465492644,7.30382851976093,2.6315541681121033,2.336630934403763,6.169610732491456,5.8331384958702435,3.86702563949741,4.688006191567241,6.720416074257916,5.581824067589337,2.095468877586875,2.119566429165935,1.245744014889882,2.9750276001922997,3.163928128084297,3.2792389745952915,1.1364603829066722,3.2904122751934164,3.2251717533250157,6.6262810525419455,6.175401525392825,6.169610732491456,4.446844134750353,2.46092865108134,0.013903741989425344,3.488589203777165,1.1444152870638704,4.2274429862919884,10.279982630620596,6.392754283805666,2.9587670793205194,2.851794959768352]))"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 62
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val train = zipped.map { case (topic, vector) => LabeledPoint(newsgroupsMap(topic), vector) }\ntrain.first",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "train: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] = MappedRDD[89] at map at <console>:86\nres49: org.apache.spark.mllib.regression.LabeledPoint = (2.0,(65536,[1500,1518,2266,2286,3093,3184,3211,3215,3456,3480,3521,3635,3673,3676,4842,5164,5739,6662,8108,8149,8384,8809,8825,8847,9253,9309,9594,9891,9941,10274,11009,12943,13600,15189,15235,15572,15940,16904,17179,17978,18078,18796,19873,19996,19997,20223,20493,20537,20643,20673,20748,21197,21234,21716,21804,21904,22719,22890,23779,24607,24682,25443,25632,26363,26821,28261,28310,29356,29434,30042,30094,30120,30308,30635,30779,30794,31212,31519,31861,32000,32390,32518,32528,32539,32720,32724,33078,33153,33279,34030,34034,34115,34222,34742,34814,35503,35556,35563,35889,36097,36531,37255,37530,37948,37956,37968,38..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "(2.0,(65536,[1500,1518,2266,2286,3093,3184,3211,3215,3456,3480,3521,3635,3673,3676,4842,5164,5739,6662,8108,8149,8384,8809,8825,8847,9253,9309,9594,9891,9941,10274,11009,12943,13600,15189,15235,15572,15940,16904,17179,17978,18078,18796,19873,19996,19997,20223,20493,20537,20643,20673,20748,21197,21234,21716,21804,21904,22719,22890,23779,24607,24682,25443,25632,26363,26821,28261,28310,29356,29434,30042,30094,30120,30308,30635,30779,30794,31212,31519,31861,32000,32390,32518,32528,32539,32720,32724,33078,33153,33279,34030,34034,34115,34222,34742,34814,35503,35556,35563,35889,36097,36531,37255,37530,37948,37956,37968,38294,39044,39080,39524,40473,40746,40902,40967,41369,42100,42290,42341,43175,43384,43421,43716,43734,44240,44528,44878,44951,45010,45107,45144,45224,45338,45385,45954,46137,46231,46937,47051,47173,48107,48213,48299,49254,49533,49823,50321,50601,50703,50718,50763,51234,51577,51852,52017,52470,52858,53402,54195,54303,56061,56132,56555,56861,57633,60227,60520,60723,61948,62700,62708,62822,64156,64620,65093],[3.6206821698803813,1.8682520008850292,3.8472230122012303,6.680436356257447,2.1880616644146995,4.137243255101374,1.190122167392037,5.9872891756975015,1.9384069875521581,5.535078497322447,1.2011872872045097,0.2664311002510456,5.9872891756975015,1.0721863083228094,1.6631565194425224,4.552670881813543,9.669219331518232,1.8682520008850292,4.310781678613214,3.4483153046392254,20.380599361289818,6.169610732491456,3.595268867342152,3.1940811662549846,2.9427667379740785,3.718605634379137,4.252688120309395,5.294141995137556,4.269232999477506,6.514520135753032,7.543430919386171,5.637453874029195,5.9872891756975015,1.330159250778699,3.8195034635835636,3.5701744352379743,41.79198986096766,5.8331384958702435,11.974578351395003,4.31331274212583,11.666276991740487,5.139991315310298,1.4422229137791154,1.6115321540372152,5.44640790392133,0.004613134622598731,1.6348630107999105,2.9427667379740785,17.49941548761073,1.7556010519645238,3.6359139185340235,1.4386893411978043,5.381153372127186,7.676078459541695,0.0,2.3194631307813975,3.9504072484364614,3.21470045345772,3.2357538626555526,4.31331274212583,5.476463551931511,3.115609550813489,2.8886995167038028,6.392754283805666,2.6791822171013577,2.881208844974645,4.483211778921227,2.934861558466965,16.429390655794535,6.379599015952293,5.80770264344881,5.9872891756975015,1.0832497278670647,1.805239033056295,10.952927103863022,8.966423557842454,1.1737507239773546,9.746857571842982,4.09016919081162,2.403770237241391,5.632408029331298,5.381153372127186,3.1248850876813834,2.4224623702535437,0.9069205435865704,14.606442485102177,8.130953156442496,0.8603534259050849,3.651914259880465,4.499239114828266,1.3428982765561288,1.2336989845911368,5.476463551931511,0.8557808369897257,3.4483153046392254,5.381153372127186,3.668174780752245,4.11548699879591,7.369408165406911,5.9872891756975015,5.294141995137556,5.381153372127186,1.1248961247423377,7.471994754182012,6.392754283805666,2.7443373177124837,8.966423557842454,5.382904619386345,2.310988503790425,2.983258099328815,36.4445457889807,4.834609665759116,5.006459922685775,2.441510565224238,2.6791822171013577,0.5667541764252155,4.783316371371566,2.052200897338359,12.785508567611332,7.815695268035331,2.7486107235331207,2.005083305106747,1.6178413232304798,2.8590677190974314,1.9679076519488559,3.0628624214934765,1.0956876991592817,7.190457045843643,1.341296995189155,3.1839287947909662,3.257260067876516,5.002743916268634,9.181649320891385,3.0877007626964126,3.07856827913314,4.520952106904074,6.680436356257447,44.46844134750353,2.881208844974645,3.906097075090212,13.360872712514894,5.381153372127186,4.078511465492644,7.30382851976093,2.6315541681121033,2.336630934403763,6.169610732491456,5.8331384958702435,3.86702563949741,4.688006191567241,6.720416074257916,5.581824067589337,2.095468877586875,2.119566429165935,1.245744014889882,2.9750276001922997,3.163928128084297,3.2792389745952915,1.1364603829066722,3.2904122751934164,3.2251717533250157,6.6262810525419455,6.175401525392825,6.169610732491456,4.446844134750353,2.46092865108134,0.013903741989425344,3.488589203777165,1.1444152870638704,4.2274429862919884,10.279982630620596,6.392754283805666,2.9587670793205194,2.851794959768352]))"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 64
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "In the preceding code snippet, we took the `newsgroups` RDD, where each element is the topic, and used the `zip` function to combine it with each element in our tfidf RDD of TF-IDF vectors. We then mapped over each key-value element in our new zipped RDD and created a `LabeledPoint` instance, where label is the class index and `features` is the TF-IDF vector.\n\n```\nTip\n\nNote that the zip operator assumes that each RDD has the same number of partitions as well as the same number of elements in each partition. It will fail if this is not the case. We can make this assumption here because we have effectively created both our tfidf RDD and newsgroupsRDD from a series of map transformations on the same original RDD that preserved the partitioning structure.\n```"
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "Now that we have an input RDD in the correct form, we can simply pass it to the naïve Bayes trainfunction:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val model = NaiveBayes.train(train, lambda = 0.1)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "model: org.apache.spark.mllib.classification.NaiveBayesModel = org.apache.spark.mllib.classification.NaiveBayesModel@420726f7\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "org.apache.spark.mllib.classification.NaiveBayesModel@420726f7"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 65
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "Let's evaluate the performance of the model on the test dataset. We will load the raw test data from the `20news-bydate-test directory`, again using `wholeTextFiles` to read each message into an RDD element. We will then extract the class labels from the file paths in the same way as we did for the `newsgroups` RDD:"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val testPath = \"/Users/sweaterr/projects/mlspark/20news-bydate/20news-bydate-test/rec.*\"\nval testRDD = sparkContext.wholeTextFiles(testPath)\nval testLabels = testRDD.map { case (file, text) =>\n  val topic = file.split(\"/\").takeRight(2).head\n  newsgroupsMap(topic)\n}",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "testPath: String = /Users/sweaterr/projects/mlspark/20news-bydate/20news-bydate-test/rec.*\ntestRDD: org.apache.spark.rdd.RDD[(String, String)] = /Users/sweaterr/projects/mlspark/20news-bydate/20news-bydate-test/rec.* WholeTextFileRDD[92] at wholeTextFiles at <console>:55\ntestLabels: org.apache.spark.rdd.RDD[Int] = MappedRDD[93] at map at <console>:56\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "MappedRDD[93] at map at &lt;console&gt;:56"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 67
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val testTf = testRDD.map { case (file, text) => hashingTF.transform(tokenize(text)) }\nval testTfIdf = idf.transform(testTf) //idf 는 traning 셋의 idf 를 쓴다\nval zippedTest = testLabels.zip(testTfIdf)\nval test = zippedTest.map { case (topic, vector) => LabeledPoint(topic, vector) }",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "testTf: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MappedRDD[94] at map at <console>:86\ntestTfIdf: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MapPartitionsRDD[95] at mapPartitions at IDF.scala:177\nzippedTest: org.apache.spark.rdd.RDD[(Int, org.apache.spark.mllib.linalg.Vector)] = ZippedPartitionsRDD2[96] at zip at <console>:88\ntest: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] = MappedRDD[97] at map at <console>:89\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "MappedRDD[97] at map at &lt;console&gt;:89"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 68
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val predictionAndLabel = test.map(p => (model.predict(p.features), p.label))\nval accuracy = 1.0 * predictionAndLabel.filter(x => x._1 == x._2).count() / test.count()\nval metrics = new MulticlassMetrics(predictionAndLabel)\naccuracy",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "predictionAndLabel: org.apache.spark.rdd.RDD[(Double, Double)] = MappedRDD[104] at map at <console>:102\naccuracy: Double = 0.9452830188679245\nmetrics: org.apache.spark.mllib.evaluation.MulticlassMetrics = org.apache.spark.mllib.evaluation.MulticlassMetrics@6dc3483e\nres51: Double = 0.9452830188679245\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "0.9452830188679245"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 70
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "val rawTokens = rdd.map { case (file, text) => text.split(\" \") }\nval rawTF = rawTokens.map(doc => hashingTF.transform(doc))\nval rawTrain = newsgroups.zip(rawTF).map { case (topic, vector) => LabeledPoint(newsgroupsMap(topic), vector) }\nval rawModel = NaiveBayes.train(rawTrain, lambda = 0.1)\nval rawTestTF = testRDD.map { case (file, text) => hashingTF.transform(text.split(\" \")) }\nval rawZippedTest = testLabels.zip(rawTestTF)\nval rawTest = rawZippedTest.map { case (topic, vector) => LabeledPoint(topic, vector) }\nval rawPredictionAndLabel = rawTest.map(p => (rawModel.predict(p.features), p.label))\nval rawAccuracy = 1.0 * rawPredictionAndLabel.filter(x => x._1 == x._2).count() / rawTest.count()\nrawAccuracy\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rawTokens: org.apache.spark.rdd.RDD[Array[String]] = MappedRDD[121] at map at <console>:66\nrawTF: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MappedRDD[122] at map at <console>:67\nrawTrain: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] = MappedRDD[124] at map at <console>:68\nrawModel: org.apache.spark.mllib.classification.NaiveBayesModel = org.apache.spark.mllib.classification.NaiveBayesModel@41bb18f4\nrawTestTF: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MappedRDD[127] at map at <console>:70\nrawZippedTest: org.apache.spark.rdd.RDD[(Int, org.apache.spark.mllib.linalg.Vector)] = ZippedPartitionsRDD2[128] at zip at <console>:71\nrawTest: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] = MappedRDD[..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "0.8566037735849057"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 74
+    } ]
+  }, {
+    "metadata" : { },
+    "cell_type" : "markdown",
+    "source" : "# Word2Vec models\n\n"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.mllib.feature.Word2Vec\nval word2vec = new Word2Vec()\nword2vec.setSeed(42)\nval word2vecModel = word2vec.fit(tokens)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.mllib.feature.Word2Vec\nword2vec: org.apache.spark.mllib.feature.Word2Vec = org.apache.spark.mllib.feature.Word2Vec@18e39ecc\nword2vecModel: org.apache.spark.mllib.feature.Word2VecModel = org.apache.spark.mllib.feature.Word2VecModel@28c9bf1\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "org.apache.spark.mllib.feature.Word2VecModel@28c9bf1"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 75
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : false
+    },
+    "cell_type" : "code",
+    "source" : "word2vecModel.findSynonyms(\"hockey\", 20).foreach(println)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "(american,0.7319734692573547)\n(nhl,0.6990262269973755)\n(major,0.6858311891555786)\n(best,0.6847231984138489)\n(draft,0.6639395952224731)\n(league,0.6637313365936279)\n(championships,0.6454682350158691)\n(tournament,0.6415175795555115)\n(championship,0.6401584148406982)\n(playoff,0.6381499767303467)\n(series,0.6376506090164185)\n(players,0.6339874267578125)\n(pool,0.6316952109336853)\n(team,0.6311563849449158)\n(stats,0.628990650177002)\n(champs,0.6211642622947693)\n(commissioner,0.6210943460464478)\n(ecac,0.6196214556694031)\n(broadcasters,0.6191655397415161)\n(baseball,0.6173228621482849)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 80
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "collapsed" : true
+    },
+    "cell_type" : "code",
+    "source" : "",
+    "outputs" : [ ]
+  } ],
+  "nbformat" : 4
+}
